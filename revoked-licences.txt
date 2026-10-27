@@ -1,0 +1,8 @@
+# Revoked licences — one per line.
+# Put either a raw licence ID (it will be hashed before publishing, so raw
+# IDs never appear in revocations.json) or a ready-made sha256:<64 hex> hash.
+# Lines starting with # are comments. The signed revocations.json is rebuilt
+# automatically by the "Sign revocations list" GitHub Action.
+#
+# Example:
+# XC-2026-0007

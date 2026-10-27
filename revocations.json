@@ -1,0 +1,7 @@
+{
+  "v": 1,
+  "typ": "revocations",
+  "version": 0,
+  "revoked": [],
+  "note": "UNSIGNED placeholder - run the 'Sign revocations list' Action after adding the LICENCE_SIGNING_PRIVATE_KEY secret."
+}
