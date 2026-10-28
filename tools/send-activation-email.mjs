@@ -1,6 +1,6 @@
 // Send the activation code in activation-code.txt via the Resend API.
 // Required env:
-//   RESEND_API_KEY   Resend API key (GitHub Secret)
+//   MAIL_TOKEN       Resend API key (workflow maps the GitHub Secret to this name)
 //   BUYER_EMAIL      recipient
 // Optional env:
 //   RESEND_FROM      e.g. "X-Claude Copilot <licences@yourdomain.com>"
@@ -15,10 +15,8 @@ function required(name) {
   return String(v).trim();
 }
 
-// Assembled indirectly so this line survives copy/paste intact.
-const apiKeyName = [82, 69, 83, 69, 78, 68, 95, 65, 80, 73, 95, 75, 69, 89].map((n) => String.fromCharCode(n)).join('');
-const apiKey = [SECURITY_DATA]
-if (!apiKey) throw new Error(`Missing required env: ${apiKeyName}`);
+const mailToken = process.env.MAIL_TOKEN || '';
+if (!mailToken) throw new Error('Missing MAIL_TOKEN (workflow secret mapping not set)');
 const to = required('BUYER_EMAIL');
 const from = process.env.RESEND_FROM || 'X-Claude Copilot <onboarding@resend.dev>';
 const support = process.env.SUPPORT_EMAIL || '';
@@ -44,7 +42,7 @@ const text = [
 const res = await fetch('https://api.resend.com/emails', {
   method: 'POST',
   headers: {
-    Authorization: `Bearer ${apiKey}`,
+    Authorization: `Bearer ${mailToken}`,
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
