@@ -3,6 +3,7 @@ name: Send activation email
 # Manually run this after a sale. It signs one activation code with the
 # private key stored in GitHub Secrets and emails it to the buyer via Resend.
 # The code itself is never written to the workflow log.
+# Edition is fixed to "pro" for now.
 on:
   workflow_dispatch:
     inputs:
@@ -18,12 +19,6 @@ on:
         description: "Install/request ID shown in the buyer's extension"
         required: true
         type: string
-      edition:
-        description: "Edition"
-        required: true
-        default: "pro"
-        type: choice
-        options: [pro]
       duration_days:
         description: "Validity in days (0 = no expiry)"
         required: true
@@ -49,7 +44,7 @@ jobs:
           BUYER_EMAIL: ${{ inputs.buyer_email }}
           LICENCE_ID: ${{ inputs.licence_id }}
           INSTALL_ID: ${{ inputs.install_id }}
-          EDITION: ${{ inputs.edition }}
+          EDITION: "pro"
           DURATION_DAYS: ${{ inputs.duration_days }}
         run: node tools/sign-activation.mjs
 
