@@ -1,0 +1,70 @@
+name: Send activation email
+
+# Manually run this after a sale. It signs one activation code with the
+# private key stored in GitHub Secrets and emails it to the buyer via Resend.
+# The code itself is never written to the workflow log.
+on:
+  workflow_dispatch:
+    inputs:
+      buyer_email:
+        description: "Buyer email address"
+        required: true
+        type: string
+      licence_id:
+        description: "Licence ID, e.g. XC-2026-0001"
+        required: true
+        type: string
+      install_id:
+        description: "Install/request ID shown in the buyer's extension"
+        required: true
+        type: string
+      edition:
+        description: "Edition"
+        required: true
+        default: "pro"
+        type:
+          choice
+        options: [pro]
+      duration_days:
+        description: "Validity in days (0 = no expiry)"
+        required: true
+        default: "365"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  send-activation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Sign activation code
+        env:
+          LICENCE_SIGNING_PRIVATE_KEY: ${{ secrets.LICENCE_SIGNING_PRIVATE_KEY }}
+          BUYER_EMAIL: ${{ inputs.buyer_email }}
+          LICENCE_ID: ${{ inputs.licence_id }}
+          INSTALL_ID: ${{ inputs.install_id }}
+          EDITION: ${{ inputs.edition }}
+          DURATION_DAYS: ${{ inputs.duration_days }}
+        run: node tools/sign-activation.mjs
+
+      - name: Mask the activation code in logs
+        run: echo "::add-mask::$(cat activation-code.txt)"
+
+      - name: Email it with Resend
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_FROM: ${{ vars.RESEND_FROM }}
+          SUPPORT_EMAIL: ${{ vars.SUPPORT_EMAIL }}
+          BUYER_EMAIL: ${{ inputs.buyer_email }}
+        run: node tools/send-activation-email.mjs
+
+      - name: Remove the code file
+        if: always()
+        run: rm -f activation-code.txt activation-meta.json
