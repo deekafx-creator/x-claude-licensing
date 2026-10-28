@@ -1,0 +1,40 @@
+name: Sign revocations list
+
+# Whenever revoked-licences.txt changes on main, rebuild + sign
+# revocations.json and commit it back. Extensions only trust the signed
+# JSON, so editing the .txt alone can never forge a revocation.
+on:
+  push:
+    branches: [main]
+    paths: ["revoked-licences.txt"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sign-revocations:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Build + sign revocations.json
+        env:
+          LICENCE_SIGNING_PRIVATE_KEY: ${{ secrets.LICENCE_SIGNING_PRIVATE_KEY }}
+        run: node tools/sign-revocations.mjs
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- revocations.json; then
+            echo "revocations.json unchanged"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add revocations.json
+          git commit -m "Update signed revocations list"
+          git push
