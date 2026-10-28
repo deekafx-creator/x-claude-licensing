@@ -22,8 +22,7 @@ on:
         description: "Edition"
         required: true
         default: "pro"
-        type:
-          choice
+        type: choice
         options: [pro]
       duration_days:
         description: "Validity in days (0 = no expiry)"
