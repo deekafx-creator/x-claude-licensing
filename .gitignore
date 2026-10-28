@@ -1,0 +1,6 @@
+# NEVER commit secrets
+licence-private-key.pem
+.env
+activation-code.txt
+activation-meta.json
+node_modules/
