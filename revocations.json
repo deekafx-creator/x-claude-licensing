@@ -1,7 +1,7 @@
 {
   "v": 1,
   "typ": "revocations",
-  "version": 0,
+  "version": 1793210496,
   "revoked": [],
-  "note": "UNSIGNED placeholder - run the 'Sign revocations list' Action after adding the LICENCE_SIGNING_PRIVATE_KEY secret."
+  "token": "XCL1.eyJyZXZva2VkIjpbXSwidHlwIjoicmV2b2NhdGlvbnMiLCJ2IjoxLCJ2ZXJzaW9uIjoxNzkzMjEwNDk2fQ.KjQg5aksteNSWNJFid_8cKgDaj6ke88l_sV8JZWrbusKtces_NhvmccTy5gjeohiWbFATRMfcqmtQet0272_Cw"
 }
