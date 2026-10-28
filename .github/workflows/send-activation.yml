@@ -53,7 +53,7 @@ jobs:
 
       - name: Email it with Resend
         env:
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          MAIL_TOKEN: ${{ secrets.RESEND_API_KEY }}
           RESEND_FROM: ${{ vars.RESEND_FROM }}
           SUPPORT_EMAIL: ${{ vars.SUPPORT_EMAIL }}
           BUYER_EMAIL: ${{ inputs.buyer_email }}
